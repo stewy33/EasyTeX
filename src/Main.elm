@@ -4,8 +4,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Json.Decode
-import Debug
-import KaTeX as Katex
+import Renderer exposing (render)
 
 
 type alias Model =
@@ -45,7 +44,7 @@ view model =
             , contenteditable True
             , on "input" (Json.Decode.map FieldValue innerHtmlDecoder)
             ]
-            [ Katex.render """\\rho""" ]
+            [ render model.body ]
 
 
 main : Program Never Model Msg

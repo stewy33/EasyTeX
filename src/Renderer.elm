@@ -1,5 +1,9 @@
 module Renderer exposing (..)
 
+import Html exposing (..)
+import KaTeX as Katex
+import Debug
+
 
 type ContentBlock
     = TextBlock String
@@ -20,10 +24,16 @@ buildBlocks isMath blocks =
                 []
 
             x :: xs ->
-                makeBlock x :: buildBlocks (not isMath) xs
+                makeBlock x
+                    :: buildBlocks (not isMath) xs
 
 
-render : String -> List ContentBlock
-render str =
+parse : String -> List ContentBlock
+parse str =
     String.split "$" str
         |> buildBlocks False
+
+
+render : String -> Html a
+render str =
+    Debug.log (toString (parse str)) (text "hi")

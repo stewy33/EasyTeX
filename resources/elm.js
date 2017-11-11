@@ -8395,6 +8395,42 @@ var _elm_lang$html$Html_Events$Options = F2(
 		return {stopPropagation: a, preventDefault: b};
 	});
 
+var _user$project$Renderer$MathBlock = function (a) {
+	return {ctor: 'MathBlock', _0: a};
+};
+var _user$project$Renderer$TextBlock = function (a) {
+	return {ctor: 'TextBlock', _0: a};
+};
+var _user$project$Renderer$buildBlocks = F2(
+	function (isMath, blocks) {
+		var makeBlock = function (str) {
+			return isMath ? _user$project$Renderer$MathBlock(str) : _user$project$Renderer$TextBlock(str);
+		};
+		var _p0 = blocks;
+		if (_p0.ctor === '[]') {
+			return {ctor: '[]'};
+		} else {
+			return {
+				ctor: '::',
+				_0: makeBlock(_p0._0),
+				_1: A2(_user$project$Renderer$buildBlocks, !isMath, _p0._1)
+			};
+		}
+	});
+var _user$project$Renderer$parse = function (str) {
+	return A2(
+		_user$project$Renderer$buildBlocks,
+		false,
+		A2(_elm_lang$core$String$split, '$', str));
+};
+var _user$project$Renderer$render = function (str) {
+	return A2(
+		_elm_lang$core$Debug$log,
+		_elm_lang$core$Basics$toString(
+			_user$project$Renderer$parse(str)),
+		_elm_lang$html$Html$text('hi'));
+};
+
 var _user$project$Main$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$none;
 };
@@ -8457,7 +8493,7 @@ var _user$project$Main$view = function (model) {
 		},
 		{
 			ctor: '::',
-			_0: _bsouthga$elm_katex$KaTeX$render('\\rho'),
+			_0: _user$project$Renderer$render(model.body),
 			_1: {ctor: '[]'}
 		});
 };
