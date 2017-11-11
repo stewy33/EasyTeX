@@ -5,6 +5,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Json.Decode
 import Debug
+import KaTeX as Katex
 
 
 type alias Model =
@@ -39,14 +40,11 @@ view model =
         innerHtmlDecoder =
             Json.Decode.at [ "target", "innerHTML" ] Json.Decode.string
     in
-        div []
-            [ div
-                [ contenteditable True
-                , on "input" (Json.Decode.map FieldValue innerHtmlDecoder)
-                ]
-                []
-            , div [] [ text model.body ]
+        div
+            [ contenteditable True
+            , on "input" (Json.Decode.map FieldValue innerHtmlDecoder)
             ]
+            [ Katex.render """\\rho""" ]
 
 
 main : Program Never Model Msg
