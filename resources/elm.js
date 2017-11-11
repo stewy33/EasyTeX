@@ -8439,6 +8439,7 @@ var _user$project$Main$view = function (model) {
 		_elm_lang$core$Json_Decode$string);
 	return A2(
 		_elm_lang$html$Html$div,
+<<<<<<< HEAD
 		{
 			ctor: '::',
 			_0: _elm_lang$html$Html_Attributes$contenteditable(true),
@@ -8454,6 +8455,34 @@ var _user$project$Main$view = function (model) {
 		{
 			ctor: '::',
 			_0: _bsouthga$elm_katex$KaTeX$render('\\rho'),
+=======
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('page'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('input'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$contenteditable(true),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html_Events$on,
+								'input',
+								A2(_elm_lang$core$Json_Decode$map, _user$project$Main$FieldValue, innerHtmlDecoder)),
+							_1: {ctor: '[]'}
+						}
+					}
+				},
+				{ctor: '[]'}),
+>>>>>>> 4c5d09ce7d3bd81388f49484a38e55f255e75349
 			_1: {ctor: '[]'}
 		});
 };

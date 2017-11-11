@@ -1,0 +1,28 @@
+/* Style.css */
+
+body {
+    background-color: #eee;
+    font-family: "Nunito", sans-serif;
+}
+
+
+div.page {
+    width: 60%;
+    margin-top: 5vh;
+    background: #fff;
+    margin: 10vh auto;
+    box-shadow: 2px 3px 10px #aaa;
+    padding: 50px 60px;
+    border-radius: 2px;
+    min-height: 100vh;
+    display: flex;
+}
+
+div.input {
+    width: 100%;
+    min-height: 100%;
+}
+
+div.input:focus {
+    outline: none;
+}

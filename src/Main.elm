@@ -41,7 +41,8 @@ view model =
             Json.Decode.at [ "target", "innerHTML" ] Json.Decode.string
     in
         div
-            [ contenteditable True
+            [ class "page"
+            , contenteditable True
             , on "input" (Json.Decode.map FieldValue innerHtmlDecoder)
             ]
             [ Katex.render """\\rho""" ]
