@@ -39,13 +39,13 @@ view model =
         innerHtmlDecoder =
             Json.Decode.at [ "target", "innerHTML" ] Json.Decode.string
     in
-        div []
+        div [ class "page" ]
             [ div
-                [ contenteditable True
+                [ class "input", contenteditable True
                 , on "input" (Json.Decode.map FieldValue innerHtmlDecoder)
                 ]
                 []
-            , div [] [ text model.body ]
+            -- , div [] [ text model.body ]
             ]
 
 

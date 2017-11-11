@@ -8304,36 +8304,33 @@ var _user$project$Main$view = function (model) {
 		_elm_lang$core$Json_Decode$string);
 	return A2(
 		_elm_lang$html$Html$div,
-		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('page'),
+			_1: {ctor: '[]'}
+		},
 		{
 			ctor: '::',
 			_0: A2(
 				_elm_lang$html$Html$div,
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$contenteditable(true),
+					_0: _elm_lang$html$Html_Attributes$class('input'),
 					_1: {
 						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html_Events$on,
-							'input',
-							A2(_elm_lang$core$Json_Decode$map, _user$project$Main$FieldValue, innerHtmlDecoder)),
-						_1: {ctor: '[]'}
+						_0: _elm_lang$html$Html_Attributes$contenteditable(true),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html_Events$on,
+								'input',
+								A2(_elm_lang$core$Json_Decode$map, _user$project$Main$FieldValue, innerHtmlDecoder)),
+							_1: {ctor: '[]'}
+						}
 					}
 				},
 				{ctor: '[]'}),
-			_1: {
-				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$div,
-					{ctor: '[]'},
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html$text(model.body),
-						_1: {ctor: '[]'}
-					}),
-				_1: {ctor: '[]'}
-			}
+			_1: {ctor: '[]'}
 		});
 };
 var _user$project$Main$main = _elm_lang$html$Html$program(
