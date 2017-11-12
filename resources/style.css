@@ -5,6 +5,14 @@ body {
     font-family: "Nunito", sans-serif;
 }
 
+p {
+    margin: 0;
+    display: inline-block;
+}
+
+.inline {
+    display: inline-block;
+}
 
 div.page {
     width: 60%;
@@ -15,15 +23,24 @@ div.page {
     border-radius: 2px;
     min-height: 100vh;
     display: flex;
+    position: relative;
 }
 
-div.editor {
+div.editorOverlay, div.editorDisplay {
     width: 100%;
     min-height: 100%;
     display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
-div.editor:focus {
+div.editorOverlay {
+    color: rgba(0,0,0,0);
+    caret-color: black;
+}
+
+div.editorOverlay:focus {
     outline: none;
 }
 
