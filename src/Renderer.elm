@@ -1,8 +1,16 @@
 module Renderer exposing (..)
 
 import Html exposing (..)
+import Html.Attributes exposing (..)
+import Html.Attributes.Extra exposing (innerHtml)
+import Html.Events exposing (..)
+import Json.Decode
 import KaTeX as Katex
 import Debug
+
+
+type Msg
+    = FieldValue String
 
 
 type ContentBlock
@@ -30,10 +38,30 @@ buildBlocks isMath blocks =
 
 parse : String -> List ContentBlock
 parse str =
-    String.split "$" str
-        |> buildBlocks False
+    buildBlocks False <| String.split "$" str
 
 
-render : String -> Html a
+convertToHtml : ContentBlock -> Html a
+convertToHtml cBlock =
+    case cBlock of
+        TextBlock str ->
+            text str
+
+        MathBlock str ->
+            Katex.render str
+
+
+render : String -> Html Msg
 render str =
-    Debug.log (toString (parse str)) (text "hi")
+    let
+        innerHtmlDecoder =
+            Json.Decode.at [ "target", "innerHTML" ] Json.Decode.string
+    in
+        div
+            [ class "editor"
+            , contenteditable True
+            , on "input" (Json.Decode.map FieldValue innerHtmlDecoder)
+            ]
+        <|
+            List.map convertToHtml (parse str)
+                ++ [ br [] [] ]

@@ -18,6 +18,12 @@ div.page {
     display: flex;
 }
 
+div.editor {
+    width: 100%;
+    min-height: 100%;
+    display: inline-block;
+}
+
 div.page:focus {
     outline: none;
 }

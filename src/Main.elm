@@ -2,9 +2,7 @@ module Main exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (..)
-import Json.Decode
-import Renderer exposing (render)
+import Renderer exposing (Msg(..), render)
 
 
 type alias Model =
@@ -14,10 +12,6 @@ type alias Model =
 init : ( Model, Cmd Msg )
 init =
     ( Model "", Cmd.none )
-
-
-type Msg
-    = FieldValue String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -35,16 +29,7 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    let
-        innerHtmlDecoder =
-            Json.Decode.at [ "target", "innerHTML" ] Json.Decode.string
-    in
-        div
-            [ class "page"
-            , contenteditable True
-            , on "input" (Json.Decode.map FieldValue innerHtmlDecoder)
-            ]
-            [ render model.body ]
+    div [ class "page" ] [ render model.body ]
 
 
 main : Program Never Model Msg
