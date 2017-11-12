@@ -2,7 +2,6 @@ module Renderer exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Attributes.Extra exposing (innerHtml)
 import Html.Events exposing (..)
 import Markdown
 import Json.Decode
@@ -31,6 +30,9 @@ buildBlocks isMath blocks =
         case blocks of
             [] ->
                 []
+
+            [ x ] ->
+                [ TextBlock x ]
 
             x :: xs ->
                 makeBlock x

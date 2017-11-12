@@ -8280,50 +8280,6 @@ var _elm_lang$html$Html_Attributes$classList = function (list) {
 };
 var _elm_lang$html$Html_Attributes$style = _elm_lang$virtual_dom$VirtualDom$style;
 
-var _elm_community$html_extra$Html_Attributes_Extra$role = function (r) {
-	return A2(_elm_lang$html$Html_Attributes$attribute, 'role', r);
-};
-var _elm_community$html_extra$Html_Attributes_Extra$intProperty = F2(
-	function (name, $int) {
-		return A2(
-			_elm_lang$html$Html_Attributes$property,
-			name,
-			_elm_lang$core$Json_Encode$int($int));
-	});
-var _elm_community$html_extra$Html_Attributes_Extra$valueAsInt = function (value) {
-	return A2(_elm_community$html_extra$Html_Attributes_Extra$intProperty, 'valueAsNumber', value);
-};
-var _elm_community$html_extra$Html_Attributes_Extra$floatProperty = F2(
-	function (name, $float) {
-		return A2(
-			_elm_lang$html$Html_Attributes$property,
-			name,
-			_elm_lang$core$Json_Encode$float($float));
-	});
-var _elm_community$html_extra$Html_Attributes_Extra$valueAsFloat = function (value) {
-	return A2(_elm_community$html_extra$Html_Attributes_Extra$floatProperty, 'valueAsNumber', value);
-};
-var _elm_community$html_extra$Html_Attributes_Extra$volume = _elm_community$html_extra$Html_Attributes_Extra$floatProperty('volume');
-var _elm_community$html_extra$Html_Attributes_Extra$boolProperty = F2(
-	function (name, bool) {
-		return A2(
-			_elm_lang$html$Html_Attributes$property,
-			name,
-			_elm_lang$core$Json_Encode$bool(bool));
-	});
-var _elm_community$html_extra$Html_Attributes_Extra$stringProperty = F2(
-	function (name, string) {
-		return A2(
-			_elm_lang$html$Html_Attributes$property,
-			name,
-			_elm_lang$core$Json_Encode$string(string));
-	});
-var _elm_community$html_extra$Html_Attributes_Extra$low = _elm_community$html_extra$Html_Attributes_Extra$stringProperty('low');
-var _elm_community$html_extra$Html_Attributes_Extra$high = _elm_community$html_extra$Html_Attributes_Extra$stringProperty('high');
-var _elm_community$html_extra$Html_Attributes_Extra$optimum = _elm_community$html_extra$Html_Attributes_Extra$stringProperty('optimum');
-var _elm_community$html_extra$Html_Attributes_Extra$innerHtml = _elm_community$html_extra$Html_Attributes_Extra$stringProperty('innerHTML');
-var _elm_community$html_extra$Html_Attributes_Extra$static = _elm_lang$html$Html_Attributes$map(_elm_lang$core$Basics$never);
-
 var _elm_lang$html$Html_Events$keyCode = A2(_elm_lang$core$Json_Decode$field, 'keyCode', _elm_lang$core$Json_Decode$int);
 var _elm_lang$html$Html_Events$targetChecked = A2(
 	_elm_lang$core$Json_Decode$at,
@@ -8582,10 +8538,7 @@ var _evancz$elm_markdown$Markdown$Options = F4(
 var _user$project$Renderer$convertToHtml = function (cBlock) {
 	var _p0 = cBlock;
 	if (_p0.ctor === 'TextBlock') {
-		return A2(
-			_evancz$elm_markdown$Markdown$toHtml,
-			{ctor: '[]'},
-			_p0._0);
+		return _elm_lang$html$Html$text(_p0._0);
 	} else {
 		return _bsouthga$elm_katex$KaTeX$render(_p0._0);
 	}
@@ -8608,11 +8561,19 @@ var _user$project$Renderer$buildBlocks = F2(
 		if (_p1.ctor === '[]') {
 			return {ctor: '[]'};
 		} else {
-			return {
-				ctor: '::',
-				_0: makeBlock(_p1._0),
-				_1: A2(_user$project$Renderer$buildBlocks, !isMath, _p1._1)
-			};
+			if (_p1._1.ctor === '[]') {
+				return {
+					ctor: '::',
+					_0: _user$project$Renderer$TextBlock(_p1._0),
+					_1: {ctor: '[]'}
+				};
+			} else {
+				return {
+					ctor: '::',
+					_0: makeBlock(_p1._0),
+					_1: A2(_user$project$Renderer$buildBlocks, !isMath, _p1._1)
+				};
+			}
 		}
 	});
 var _user$project$Renderer$parse = function (str) {
