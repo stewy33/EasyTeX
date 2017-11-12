@@ -98,5 +98,21 @@ header {
 h1 {
     color: #fff;
     text-align: center;
-    margin-top: 10px;
+    margin-top: 8px;
+    margin-left: 20px;
+    float: left;
+}
+
+select {
+    -webkit-appearance: none;
+    color: #fff;
+    background-color: #000080;
+    padding: 16px 10px;
+    float: right;
+    margin-top: 0px;
+    margin-right: 20px;
+    font-size: 20px;
+    border: 0;
+    outline: 0;
+    cursor: pointer;
 }

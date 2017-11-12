@@ -5,21 +5,9 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Markdown
 import List
-import Json.Decode
+import Types exposing (..)
+import Json.Decode as Json
 import KaTeX as Katex
-
-
-type Msg
-    = FieldValue String
-
-
-type alias ID =
-    Int
-
-
-type ContentBlock
-    = TextBlock String
-    | MathBlock ID String
 
 
 buildBlocks : Int -> List String -> List ContentBlock
@@ -58,10 +46,10 @@ convertToHtml cBlock =
             div [ id <| toString iD, class "math-wrapper" ] [ Katex.render str ]
 
 
-normalizeSpaces : List ContentBlock -> List (Html a) -> String
-normalizeSpaces cBlocks htmls =
+concatMap : List ContentBlock -> String
+concatMap cBlocks =
     let
-        combine cBlock html =
+        extract cBlock =
             case cBlock of
                 MathBlock id str ->
                     str
@@ -69,27 +57,28 @@ normalizeSpaces cBlocks htmls =
                 TextBlock str ->
                     str
     in
-        String.concat <| List.map2 combine cBlocks htmls
+        String.concat <| List.map extract cBlocks
 
 
-render : String -> List (Html Msg)
-render str =
+render : Model -> List (Html Msg)
+render model =
     let
         onInput f =
             on "input" <|
-                Json.Decode.map f <|
-                    Json.Decode.at [ "target", "innerHTML" ] Json.Decode.string
+                Json.map f <|
+                    Json.at [ "target", "innerHTML" ] Json.string
 
         editorDisplay =
-            (List.map convertToHtml <| parse str) ++ [ div [ class "cursor" ] [] ]
+            (List.map convertToHtml <| parse model.body) ++ [ div [ class "cursor" ] [] ]
     in
-        [ div [ class "editorDisplay" ] editorDisplay
+        [ div [ style [ ( "font-size", model.fontSize ) ], class "editorDisplay" ] editorDisplay
         , div
             [ class "editorOverlay"
             , contenteditable True
             , onInput FieldValue
             ]
-            [ Markdown.toHtml [ class "inline" ]
-                (normalizeSpaces (parse str) editorDisplay)
+            [ Markdown.toHtml [ class "inline" ] <|
+                concatMap <|
+                    parse model.body
             ]
         ]

@@ -1,34 +1,26 @@
-port module Main exposing (..)
+module Main exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Json.Decode as Json
+import Html.Events exposing (..)
 import Renderer exposing (..)
-
-
-type alias Model =
-    { body : String
-    }
+import Types exposing (..)
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model "", Cmd.none )
+    ( Model "" "1.25em", Cmd.none )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    let
-        isMath x =
-            case x of
-                MathBlock id str ->
-                    Just str
+    case msg of
+        FieldValue str ->
+            ( { model | body = str }, Cmd.none )
 
-                TextBlock str ->
-                    Nothing
-    in
-        case msg of
-            FieldValue str ->
-                ( { body = str }, Cmd.none )
+        NewFontSize size ->
+            ( { model | fontSize = size }, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
@@ -36,9 +28,32 @@ subscriptions model =
     Sub.none
 
 
+fontSelect : Html Msg
+fontSelect =
+    let
+        onChange f =
+            on "change" <| Json.map f <| Json.at [ "target", "value" ] Json.string
+    in
+        select
+            [ onChange NewFontSize ]
+            [ option [ value "1.0em" ] [ text "Small ▼" ]
+            , option [ value "1.25em", selected True ] [ text "Medium ▼" ]
+            , option [ value "1.5em" ] [ text "Large ▼" ]
+            ]
+
+
 view : Model -> Html Msg
 view model =
-    div [ class "page" ] [ div [ class "container" ] <| render model.body ]
+    body []
+        [ header []
+            [ h1 [] [ text "EasyTeX" ]
+            , div [ class "toolbar" ] [ fontSelect ]
+            ]
+        , div [ class "page" ]
+            [ div [ class "container" ] <|
+                render model
+            ]
+        ]
 
 
 main : Program Never Model Msg

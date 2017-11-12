@@ -8554,20 +8554,36 @@ var _evancz$elm_markdown$Markdown$Options = F4(
 		return {githubFlavored: a, defaultHighlighting: b, sanitize: c, smartypants: d};
 	});
 
-var _user$project$Renderer$normalizeSpaces = F2(
-	function (cBlocks, htmls) {
-		var combine = F2(
-			function (cBlock, html) {
-				var _p0 = cBlock;
-				if (_p0.ctor === 'MathBlock') {
-					return _p0._1;
-				} else {
-					return _p0._0;
-				}
-			});
-		return _elm_lang$core$String$concat(
-			A3(_elm_lang$core$List$map2, combine, cBlocks, htmls));
+var _user$project$Types$Model = F2(
+	function (a, b) {
+		return {body: a, fontSize: b};
 	});
+var _user$project$Types$NewFontSize = function (a) {
+	return {ctor: 'NewFontSize', _0: a};
+};
+var _user$project$Types$FieldValue = function (a) {
+	return {ctor: 'FieldValue', _0: a};
+};
+var _user$project$Types$MathBlock = F2(
+	function (a, b) {
+		return {ctor: 'MathBlock', _0: a, _1: b};
+	});
+var _user$project$Types$TextBlock = function (a) {
+	return {ctor: 'TextBlock', _0: a};
+};
+
+var _user$project$Renderer$concatMap = function (cBlocks) {
+	var extract = function (cBlock) {
+		var _p0 = cBlock;
+		if (_p0.ctor === 'MathBlock') {
+			return _p0._1;
+		} else {
+			return _p0._0;
+		}
+	};
+	return _elm_lang$core$String$concat(
+		A2(_elm_lang$core$List$map, extract, cBlocks));
+};
 var _user$project$Renderer$convertToHtml = function (cBlock) {
 	var _p1 = cBlock;
 	if (_p1.ctor === 'TextBlock') {
@@ -8599,22 +8615,12 @@ var _user$project$Renderer$convertToHtml = function (cBlock) {
 			});
 	}
 };
-var _user$project$Renderer$FieldValue = function (a) {
-	return {ctor: 'FieldValue', _0: a};
-};
-var _user$project$Renderer$MathBlock = F2(
-	function (a, b) {
-		return {ctor: 'MathBlock', _0: a, _1: b};
-	});
-var _user$project$Renderer$TextBlock = function (a) {
-	return {ctor: 'TextBlock', _0: a};
-};
 var _user$project$Renderer$buildBlocks = F2(
 	function (id, blocks) {
 		var makeBlock = function (str) {
 			return _elm_lang$core$Native_Utils.eq(
 				A2(_elm_lang$core$Basics_ops['%'], id, 2),
-				0) ? _user$project$Renderer$TextBlock(str) : A2(_user$project$Renderer$MathBlock, id, str);
+				0) ? _user$project$Types$TextBlock(str) : A2(_user$project$Types$MathBlock, id, str);
 		};
 		var _p2 = blocks;
 		if (_p2.ctor === '[]') {
@@ -8623,7 +8629,7 @@ var _user$project$Renderer$buildBlocks = F2(
 			if (_p2._1.ctor === '[]') {
 				return {
 					ctor: '::',
-					_0: _user$project$Renderer$TextBlock(_p2._0),
+					_0: _user$project$Types$TextBlock(_p2._0),
 					_1: {ctor: '[]'}
 				};
 			} else {
@@ -8641,13 +8647,13 @@ var _user$project$Renderer$parse = function (str) {
 		0,
 		A2(_elm_lang$core$String$split, '$', str));
 };
-var _user$project$Renderer$render = function (str) {
+var _user$project$Renderer$render = function (model) {
 	var editorDisplay = A2(
 		_elm_lang$core$Basics_ops['++'],
 		A2(
 			_elm_lang$core$List$map,
 			_user$project$Renderer$convertToHtml,
-			_user$project$Renderer$parse(str)),
+			_user$project$Renderer$parse(model.body)),
 		{
 			ctor: '::',
 			_0: A2(
@@ -8686,8 +8692,17 @@ var _user$project$Renderer$render = function (str) {
 			_elm_lang$html$Html$div,
 			{
 				ctor: '::',
-				_0: _elm_lang$html$Html_Attributes$class('editorDisplay'),
-				_1: {ctor: '[]'}
+				_0: _elm_lang$html$Html_Attributes$style(
+					{
+						ctor: '::',
+						_0: {ctor: '_Tuple2', _0: 'font-size', _1: model.fontSize},
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('editorDisplay'),
+					_1: {ctor: '[]'}
+				}
 			},
 			editorDisplay),
 		_1: {
@@ -8702,7 +8717,7 @@ var _user$project$Renderer$render = function (str) {
 						_0: _elm_lang$html$Html_Attributes$contenteditable(true),
 						_1: {
 							ctor: '::',
-							_0: onInput(_user$project$Renderer$FieldValue),
+							_0: onInput(_user$project$Types$FieldValue),
 							_1: {ctor: '[]'}
 						}
 					}
@@ -8716,10 +8731,8 @@ var _user$project$Renderer$render = function (str) {
 							_0: _elm_lang$html$Html_Attributes$class('inline'),
 							_1: {ctor: '[]'}
 						},
-						A2(
-							_user$project$Renderer$normalizeSpaces,
-							_user$project$Renderer$parse(str),
-							editorDisplay)),
+						_user$project$Renderer$concatMap(
+							_user$project$Renderer$parse(model.body))),
 					_1: {ctor: '[]'}
 				}),
 			_1: {ctor: '[]'}
@@ -8727,25 +8740,144 @@ var _user$project$Renderer$render = function (str) {
 	};
 };
 
-var _user$project$Main$view = function (model) {
+var _user$project$Main$fontSelect = function () {
+	var onChange = function (f) {
+		return A2(
+			_elm_lang$html$Html_Events$on,
+			'change',
+			A2(
+				_elm_lang$core$Json_Decode$map,
+				f,
+				A2(
+					_elm_lang$core$Json_Decode$at,
+					{
+						ctor: '::',
+						_0: 'target',
+						_1: {
+							ctor: '::',
+							_0: 'value',
+							_1: {ctor: '[]'}
+						}
+					},
+					_elm_lang$core$Json_Decode$string)));
+	};
 	return A2(
-		_elm_lang$html$Html$div,
+		_elm_lang$html$Html$select,
 		{
 			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('page'),
+			_0: onChange(_user$project$Types$NewFontSize),
 			_1: {ctor: '[]'}
 		},
 		{
 			ctor: '::',
 			_0: A2(
-				_elm_lang$html$Html$div,
+				_elm_lang$html$Html$option,
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$class('container'),
+					_0: _elm_lang$html$Html_Attributes$value('1.0em'),
 					_1: {ctor: '[]'}
 				},
-				_user$project$Renderer$render(model.body)),
-			_1: {ctor: '[]'}
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('Small ▼'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$option,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$value('1.25em'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$selected(true),
+							_1: {ctor: '[]'}
+						}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('Medium ▼'),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$option,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$value('1.5em'),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('Large ▼'),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}
+			}
+		});
+}();
+var _user$project$Main$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$body,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$header,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$h1,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('EasyTeX'),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('toolbar'),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: _user$project$Main$fontSelect,
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class('page'),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('container'),
+								_1: {ctor: '[]'}
+							},
+							_user$project$Renderer$render(model)),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			}
 		});
 };
 var _user$project$Main$subscriptions = function (model) {
@@ -8753,27 +8885,28 @@ var _user$project$Main$subscriptions = function (model) {
 };
 var _user$project$Main$update = F2(
 	function (msg, model) {
-		var isMath = function (x) {
-			var _p0 = x;
-			if (_p0.ctor === 'MathBlock') {
-				return _elm_lang$core$Maybe$Just(_p0._1);
-			} else {
-				return _elm_lang$core$Maybe$Nothing;
-			}
-		};
-		var _p1 = msg;
-		return {
-			ctor: '_Tuple2',
-			_0: {body: _p1._0},
-			_1: _elm_lang$core$Platform_Cmd$none
-		};
+		var _p0 = msg;
+		if (_p0.ctor === 'FieldValue') {
+			return {
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$Native_Utils.update(
+					model,
+					{body: _p0._0}),
+				_1: _elm_lang$core$Platform_Cmd$none
+			};
+		} else {
+			return {
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$Native_Utils.update(
+					model,
+					{fontSize: _p0._0}),
+				_1: _elm_lang$core$Platform_Cmd$none
+			};
+		}
 	});
-var _user$project$Main$Model = function (a) {
-	return {body: a};
-};
 var _user$project$Main$init = {
 	ctor: '_Tuple2',
-	_0: _user$project$Main$Model(''),
+	_0: A2(_user$project$Types$Model, '', '1.25em'),
 	_1: _elm_lang$core$Platform_Cmd$none
 };
 var _user$project$Main$main = _elm_lang$html$Html$program(

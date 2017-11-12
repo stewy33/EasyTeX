@@ -10,9 +10,16 @@
         <script type="text/javascript" src="resources/elm.js"></script>
     </head>
     <body>
-        <header><h1>EasyTeX</h1></header>
         <script>
             var app = Elm.Main.fullscreen();
+
+            var storageKey = "token";
+            app.ports.save.subscribe( value =>  {
+                localStorage.setItem(storageKey, value);
+            });
+            app.ports.doload.subscribe( () => {
+                app.ports.load.send(localStorage.getItem(storageKey));
+            });
         </script>
     </body>
 </html>
