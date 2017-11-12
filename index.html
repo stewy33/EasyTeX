@@ -10,10 +10,25 @@
         <script type="text/javascript" src="resources/elm.js"></script>
     </head>
     <body>
-        <header><h1>EasyTeX</h1></header>
+        <header><h1>EasyTeX<br/><input type="submit" value="Save" onclick=""/><input type="button" value="Change Font Size" />
+        <script type="text/javascript">
+            var storageKey = "token";
+            var app = Elm.Main.fullscreen();
+            app.ports.save.subscribe(function(value) {
+            localStorage.setItem(storageKey, value);
+            });
+            app.ports.doload.subscribe(function() {
+            app.ports.load.send(localStorage.getItem(storageKey));
+            });
+        </script>
+        </h1>
+
+
+
+        </header>
+
         <script>
             var app = Elm.Main.fullscreen();
         </script>
     </body>
 </html>
-
