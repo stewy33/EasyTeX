@@ -4,6 +4,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Attributes.Extra exposing (innerHtml)
 import Html.Events exposing (..)
+import Markdown
 import Json.Decode
 import KaTeX as Katex
 import Debug
@@ -45,7 +46,7 @@ convertToHtml : ContentBlock -> Html a
 convertToHtml cBlock =
     case cBlock of
         TextBlock str ->
-            text str
+            Markdown.toHtml [] str
 
         MathBlock str ->
             Katex.render str
@@ -64,4 +65,3 @@ render str =
             ]
         <|
             List.map convertToHtml (parse str)
-                ++ [ br [] [] ]
