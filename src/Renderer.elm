@@ -46,24 +46,33 @@ parse str =
 
 convertToHtml : ContentBlock -> Html a
 convertToHtml cBlock =
-    case cBlock of
-        TextBlock str ->
-            Markdown.toHtml [] str
+    let
+        renderedStr =
+            case cBlock of
+                TextBlock str ->
+                    str
 
-        MathBlock str ->
-            Katex.render str
+                MathBlock str ->
+                    Katex.renderToString str
+    in
+        Markdown.toHtml [ class "inline" ] renderedStr
 
 
-render : String -> Html Msg
+render : String -> List (Html Msg)
 render str =
     let
-        innerHtmlDecoder =
-            Json.Decode.at [ "target", "innerHTML" ] Json.Decode.string
+        onInput f =
+            on "input" <|
+                Json.Decode.map f <|
+                    Json.Decode.at [ "target", "innerHTML" ] Json.Decode.string
     in
-        div
-            [ class "editor"
+        [ div [ class "editorDisplay" ] <|
+            List.map convertToHtml <|
+                parse str
+        , div
+            [ class "editorOverlay"
             , contenteditable True
-            , on "input" (Json.Decode.map FieldValue innerHtmlDecoder)
+            , onInput FieldValue
             ]
-        <|
-            List.map convertToHtml (parse str)
+            []
+        ]
