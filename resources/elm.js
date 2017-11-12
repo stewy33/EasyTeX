@@ -7825,6 +7825,20 @@ function renderElement(options, expression) {
     .custom(factList, model, implementation);
 }
 
+function renderCustomElement(options, expression) {
+    console.log("hi");
+  options.throwOnError = false;
+
+  var model = {
+    options: options,
+    expression: expression
+  };
+
+  var factList = {ctor: '[]'};
+
+  return _elm_lang$virtual_dom$Native_VirtualDom
+    .custom(factList, model, implementation);
+}
 
 function tryRenderKatex(expression, element, options) {
   try {
@@ -7841,6 +7855,7 @@ function _render(model) {
 
   return tryRenderKatex(model.expression, div, model.options);
 }
+
 
 function diff(a, b) {
   if (a.model.expression === b.model.expression &&
@@ -7905,7 +7920,8 @@ var katex = function() {
 
 return {
   render: F2(renderElement),
-  renderToString: F2(renderToString)
+  renderToString: F2(renderToString),
+  renderCustom: F2(renderCustomElement)
 };
 
 }();
@@ -7921,6 +7937,9 @@ var _bsouthga$elm_katex$KaTeX$renderWithOptions = F2(
 var _bsouthga$elm_katex$KaTeX$defaultOptions = {displayMode: false, errorColor: '#cc0000'};
 var _bsouthga$elm_katex$KaTeX$renderToString = function (string) {
 	return A2(_bsouthga$elm_katex$KaTeX$renderToStringWithOptions, _bsouthga$elm_katex$KaTeX$defaultOptions, string);
+};
+var _bsouthga$elm_katex$KaTeX$renderCustom = function (string) {
+	return A2(_bsouthga$elm_katex$Native_KaTeX.renderCustom, _bsouthga$elm_katex$KaTeX$defaultOptions, string);
 };
 var _bsouthga$elm_katex$KaTeX$render = function (string) {
 	return A2(_bsouthga$elm_katex$KaTeX$renderWithOptions, _bsouthga$elm_katex$KaTeX$defaultOptions, string);
@@ -8541,7 +8560,7 @@ var _user$project$Renderer$normalizeSpaces = F2(
 			function (cBlock, html) {
 				var _p0 = cBlock;
 				if (_p0.ctor === 'MathBlock') {
-					return 'testing';
+					return _p0._1;
 				} else {
 					return _p0._0;
 				}
@@ -8565,12 +8584,17 @@ var _user$project$Renderer$convertToHtml = function (cBlock) {
 			_elm_lang$html$Html$div,
 			{
 				ctor: '::',
-				_0: _elm_lang$html$Html_Attributes$class('math-wrapper'),
-				_1: {ctor: '[]'}
+				_0: _elm_lang$html$Html_Attributes$id(
+					_elm_lang$core$Basics$toString(_p1._0)),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('math-wrapper'),
+					_1: {ctor: '[]'}
+				}
 			},
 			{
 				ctor: '::',
-				_0: _bsouthga$elm_katex$KaTeX$render(_p1._0),
+				_0: _bsouthga$elm_katex$KaTeX$render(_p1._1),
 				_1: {ctor: '[]'}
 			});
 	}
@@ -8578,9 +8602,10 @@ var _user$project$Renderer$convertToHtml = function (cBlock) {
 var _user$project$Renderer$FieldValue = function (a) {
 	return {ctor: 'FieldValue', _0: a};
 };
-var _user$project$Renderer$MathBlock = function (a) {
-	return {ctor: 'MathBlock', _0: a};
-};
+var _user$project$Renderer$MathBlock = F2(
+	function (a, b) {
+		return {ctor: 'MathBlock', _0: a, _1: b};
+	});
 var _user$project$Renderer$TextBlock = function (a) {
 	return {ctor: 'TextBlock', _0: a};
 };
@@ -8589,7 +8614,7 @@ var _user$project$Renderer$buildBlocks = F2(
 		var makeBlock = function (str) {
 			return _elm_lang$core$Native_Utils.eq(
 				A2(_elm_lang$core$Basics_ops['%'], id, 2),
-				0) ? _user$project$Renderer$TextBlock(str) : _user$project$Renderer$MathBlock(str);
+				0) ? _user$project$Renderer$TextBlock(str) : A2(_user$project$Renderer$MathBlock, id, str);
 		};
 		var _p2 = blocks;
 		if (_p2.ctor === '[]') {
@@ -8618,9 +8643,23 @@ var _user$project$Renderer$parse = function (str) {
 };
 var _user$project$Renderer$render = function (str) {
 	var editorDisplay = A2(
-		_elm_lang$core$List$map,
-		_user$project$Renderer$convertToHtml,
-		_user$project$Renderer$parse(str));
+		_elm_lang$core$Basics_ops['++'],
+		A2(
+			_elm_lang$core$List$map,
+			_user$project$Renderer$convertToHtml,
+			_user$project$Renderer$parse(str)),
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('cursor'),
+					_1: {ctor: '[]'}
+				},
+				{ctor: '[]'}),
+			_1: {ctor: '[]'}
+		});
 	var onInput = function (f) {
 		return A2(
 			_elm_lang$html$Html_Events$on,
@@ -8717,7 +8756,7 @@ var _user$project$Main$update = F2(
 		var isMath = function (x) {
 			var _p0 = x;
 			if (_p0.ctor === 'MathBlock') {
-				return _elm_lang$core$Maybe$Just(_p0._0);
+				return _elm_lang$core$Maybe$Just(_p0._1);
 			} else {
 				return _elm_lang$core$Maybe$Nothing;
 			}

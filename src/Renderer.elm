@@ -19,7 +19,7 @@ type alias ID =
 
 type ContentBlock
     = TextBlock String
-    | MathBlock String
+    | MathBlock ID String
 
 
 buildBlocks : Int -> List String -> List ContentBlock
@@ -29,7 +29,7 @@ buildBlocks id blocks =
             if id % 2 == 0 then
                 TextBlock str
             else
-                MathBlock str
+                MathBlock id str
     in
         case blocks of
             [] ->
@@ -54,8 +54,8 @@ convertToHtml cBlock =
         TextBlock str ->
             Markdown.toHtml [ class "inline" ] str
 
-        MathBlock str ->
-            div [ class "math-wrapper" ] [ Katex.render str ]
+        MathBlock iD str ->
+            div [ id <| toString iD, class "math-wrapper" ] [ Katex.render str ]
 
 
 normalizeSpaces : List ContentBlock -> List (Html a) -> String
@@ -63,8 +63,8 @@ normalizeSpaces cBlocks htmls =
     let
         combine cBlock html =
             case cBlock of
-                MathBlock str ->
-                    "testing"
+                MathBlock id str ->
+                    str
 
                 TextBlock str ->
                     str
@@ -81,7 +81,7 @@ render str =
                     Json.Decode.at [ "target", "innerHTML" ] Json.Decode.string
 
         editorDisplay =
-            List.map convertToHtml <| parse str
+            (List.map convertToHtml <| parse str) ++ [ div [ class "cursor" ] [] ]
     in
         [ div [ class "editorDisplay" ] editorDisplay
         , div

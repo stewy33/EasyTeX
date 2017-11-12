@@ -19,6 +19,27 @@ body {
     display: inline;
 }
 
+.cursor {
+    animation: 1s linear infinite condemned_blink_effect;
+    width: 0.15em;
+    height: 1em;
+    display: inline-block;
+    margin: 0;
+    background-color: black;
+    vertical-align: baseline;
+}
+@keyframes condemned_blink_effect {
+    0% {
+        visibility: hidden;
+    }
+    50% {
+        visibility: hidden;
+    }
+    100% {
+        visibility: visible;
+    }
+}
+
 .math-wrapper, .math-wrapper > div {
     display: inline;
 }
@@ -52,7 +73,6 @@ div.editorOverlay, div.editorDisplay {
 
 div.editorOverlay {
     color: rgba(0,0,0,0);
-    caret-color: black;
 }
 
 div.editorOverlay:focus {

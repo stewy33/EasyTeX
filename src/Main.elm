@@ -20,7 +20,7 @@ update msg model =
     let
         isMath x =
             case x of
-                MathBlock str ->
+                MathBlock id str ->
                     Just str
 
                 TextBlock str ->
