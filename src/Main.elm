@@ -29,7 +29,7 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    div [ class "page" ] [ render model.body ]
+    div [ class "page" ] <| render model.body
 
 
 main : Program Never Model Msg

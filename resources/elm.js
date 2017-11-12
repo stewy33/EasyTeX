@@ -8536,12 +8536,22 @@ var _evancz$elm_markdown$Markdown$Options = F4(
 	});
 
 var _user$project$Renderer$convertToHtml = function (cBlock) {
-	var _p0 = cBlock;
-	if (_p0.ctor === 'TextBlock') {
-		return _elm_lang$html$Html$text(_p0._0);
-	} else {
-		return _bsouthga$elm_katex$KaTeX$render(_p0._0);
-	}
+	var renderedStr = function () {
+		var _p0 = cBlock;
+		if (_p0.ctor === 'TextBlock') {
+			return _p0._0;
+		} else {
+			return _bsouthga$elm_katex$KaTeX$renderToString(_p0._0);
+		}
+	}();
+	return A2(
+		_evancz$elm_markdown$Markdown$toHtml,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('inline'),
+			_1: {ctor: '[]'}
+		},
+		renderedStr);
 };
 var _user$project$Renderer$FieldValue = function (a) {
 	return {ctor: 'FieldValue', _0: a};
@@ -8583,40 +8593,60 @@ var _user$project$Renderer$parse = function (str) {
 		A2(_elm_lang$core$String$split, '$', str));
 };
 var _user$project$Renderer$render = function (str) {
-	var innerHtmlDecoder = A2(
-		_elm_lang$core$Json_Decode$at,
-		{
-			ctor: '::',
-			_0: 'target',
-			_1: {
+	var onInput = function (f) {
+		return A2(
+			_elm_lang$html$Html_Events$on,
+			'input',
+			A2(
+				_elm_lang$core$Json_Decode$map,
+				f,
+				A2(
+					_elm_lang$core$Json_Decode$at,
+					{
+						ctor: '::',
+						_0: 'target',
+						_1: {
+							ctor: '::',
+							_0: 'innerHTML',
+							_1: {ctor: '[]'}
+						}
+					},
+					_elm_lang$core$Json_Decode$string)));
+	};
+	return {
+		ctor: '::',
+		_0: A2(
+			_elm_lang$html$Html$div,
+			{
 				ctor: '::',
-				_0: 'innerHTML',
+				_0: _elm_lang$html$Html_Attributes$class('editorDisplay'),
 				_1: {ctor: '[]'}
-			}
-		},
-		_elm_lang$core$Json_Decode$string);
-	return A2(
-		_elm_lang$html$Html$div,
-		{
+			},
+			A2(
+				_elm_lang$core$List$map,
+				_user$project$Renderer$convertToHtml,
+				_user$project$Renderer$parse(str))),
+		_1: {
 			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('editor'),
-			_1: {
-				ctor: '::',
-				_0: _elm_lang$html$Html_Attributes$contenteditable(true),
-				_1: {
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{
 					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html_Events$on,
-						'input',
-						A2(_elm_lang$core$Json_Decode$map, _user$project$Renderer$FieldValue, innerHtmlDecoder)),
-					_1: {ctor: '[]'}
-				}
-			}
-		},
-		A2(
-			_elm_lang$core$List$map,
-			_user$project$Renderer$convertToHtml,
-			_user$project$Renderer$parse(str)));
+					_0: _elm_lang$html$Html_Attributes$class('editorOverlay'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$contenteditable(true),
+						_1: {
+							ctor: '::',
+							_0: onInput(_user$project$Renderer$FieldValue),
+							_1: {ctor: '[]'}
+						}
+					}
+				},
+				{ctor: '[]'}),
+			_1: {ctor: '[]'}
+		}
+	};
 };
 
 var _user$project$Main$view = function (model) {
@@ -8627,11 +8657,7 @@ var _user$project$Main$view = function (model) {
 			_0: _elm_lang$html$Html_Attributes$class('page'),
 			_1: {ctor: '[]'}
 		},
-		{
-			ctor: '::',
-			_0: _user$project$Renderer$render(model.body),
-			_1: {ctor: '[]'}
-		});
+		_user$project$Renderer$render(model.body));
 };
 var _user$project$Main$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$none;
