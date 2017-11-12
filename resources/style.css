@@ -8,9 +8,8 @@ body {
 
 div.page {
     width: 60%;
-    margin-top: 5vh;
+    margin: 15vh auto;
     background: #fff;
-    margin: 10vh auto;
     box-shadow: 2px 3px 10px #aaa;
     padding: 50px 60px;
     border-radius: 2px;
@@ -24,6 +23,23 @@ div.editor {
     display: inline-block;
 }
 
-div.page:focus {
+div.editor:focus {
     outline: none;
+}
+
+/* Future Header */
+header {
+    background: #000080;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 60px;
+    box-shadow: 0 2px 5px #aaa;
+}
+
+h1 {
+    color: #fff;
+    text-align: center;
+    margin-top: 10px;
 }
