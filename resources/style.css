@@ -5,13 +5,27 @@ body {
     font-family: "Nunito", sans-serif;
 }
 
-p {
-    margin: 0;
-    display: inline-block;
+.mono {
+    font-family: monospace;
 }
 
-.inline {
-    display: inline-block;
+.container {
+    position: relative;
+    width: 100%;
+}
+
+.editorDisplay p {
+    margin: 0;
+    display: inline;
+}
+
+.math-wrapper, .math-wrapper > div {
+    display: inline;
+}
+
+.inline, .inline div:last-child {
+    display: inline;
+    word-wrap: break-word;
 }
 
 div.page {
@@ -33,6 +47,7 @@ div.editorOverlay, div.editorDisplay {
     position: absolute;
     top: 0;
     left: 0;
+    overflow: scroll;
 }
 
 div.editorOverlay {
@@ -44,6 +59,10 @@ div.editorOverlay:focus {
     outline: none;
 }
 
+div.editorDisplay {
+    position: relative;
+}
+
 /* Future Header */
 header {
     background: #000080;
@@ -53,6 +72,7 @@ header {
     left: 0;
     height: 60px;
     box-shadow: 0 2px 5px #aaa;
+    z-index: 1;
 }
 
 h1 {

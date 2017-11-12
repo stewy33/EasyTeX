@@ -1,12 +1,13 @@
-module Main exposing (..)
+port module Main exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Renderer exposing (Msg(..), render)
+import Renderer exposing (..)
 
 
 type alias Model =
-    { body : String }
+    { body : String
+    }
 
 
 init : ( Model, Cmd Msg )
@@ -16,10 +17,18 @@ init =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case msg of
-        FieldValue str ->
-            Debug.log str
-                ( { model | body = str }, Cmd.none )
+    let
+        isMath x =
+            case x of
+                MathBlock str ->
+                    Just str
+
+                TextBlock str ->
+                    Nothing
+    in
+        case msg of
+            FieldValue str ->
+                ( { body = str }, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
@@ -29,7 +38,7 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    div [ class "page" ] <| render model.body
+    div [ class "page" ] [ div [ class "container" ] <| render model.body ]
 
 
 main : Program Never Model Msg

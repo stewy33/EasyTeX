@@ -4,13 +4,17 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Markdown
+import List
 import Json.Decode
 import KaTeX as Katex
-import Debug
 
 
 type Msg
     = FieldValue String
+
+
+type alias ID =
+    Int
 
 
 type ContentBlock
@@ -18,14 +22,14 @@ type ContentBlock
     | MathBlock String
 
 
-buildBlocks : Bool -> List String -> List ContentBlock
-buildBlocks isMath blocks =
+buildBlocks : Int -> List String -> List ContentBlock
+buildBlocks id blocks =
     let
         makeBlock str =
-            if isMath then
-                MathBlock str
-            else
+            if id % 2 == 0 then
                 TextBlock str
+            else
+                MathBlock str
     in
         case blocks of
             [] ->
@@ -36,26 +40,36 @@ buildBlocks isMath blocks =
 
             x :: xs ->
                 makeBlock x
-                    :: buildBlocks (not isMath) xs
+                    :: buildBlocks (id + 1) xs
 
 
 parse : String -> List ContentBlock
 parse str =
-    buildBlocks False <| String.split "$" str
+    buildBlocks 0 <| String.split "$" str
 
 
 convertToHtml : ContentBlock -> Html a
 convertToHtml cBlock =
+    case cBlock of
+        TextBlock str ->
+            Markdown.toHtml [ class "inline" ] str
+
+        MathBlock str ->
+            div [ class "math-wrapper" ] [ Katex.render str ]
+
+
+normalizeSpaces : List ContentBlock -> List (Html a) -> String
+normalizeSpaces cBlocks htmls =
     let
-        renderedStr =
+        combine cBlock html =
             case cBlock of
+                MathBlock str ->
+                    "testing"
+
                 TextBlock str ->
                     str
-
-                MathBlock str ->
-                    Katex.renderToString str
     in
-        Markdown.toHtml [ class "inline" ] renderedStr
+        String.concat <| List.map2 combine cBlocks htmls
 
 
 render : String -> List (Html Msg)
@@ -65,14 +79,17 @@ render str =
             on "input" <|
                 Json.Decode.map f <|
                     Json.Decode.at [ "target", "innerHTML" ] Json.Decode.string
+
+        editorDisplay =
+            List.map convertToHtml <| parse str
     in
-        [ div [ class "editorDisplay" ] <|
-            List.map convertToHtml <|
-                parse str
+        [ div [ class "editorDisplay" ] editorDisplay
         , div
             [ class "editorOverlay"
             , contenteditable True
             , onInput FieldValue
             ]
-            []
+            [ Markdown.toHtml [ class "inline" ]
+                (normalizeSpaces (parse str) editorDisplay)
+            ]
         ]

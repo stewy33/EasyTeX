@@ -7842,7 +7842,6 @@ function _render(model) {
   return tryRenderKatex(model.expression, div, model.options);
 }
 
-
 function diff(a, b) {
   if (a.model.expression === b.model.expression &&
     a.model.options === b.model.options) {
@@ -7910,6 +7909,7 @@ return {
 };
 
 }();
+
 var _bsouthga$elm_katex$KaTeX$renderToStringWithOptions = F2(
 	function (options, string) {
 		return A2(_bsouthga$elm_katex$Native_KaTeX.renderToString, options, string);
@@ -8535,23 +8535,45 @@ var _evancz$elm_markdown$Markdown$Options = F4(
 		return {githubFlavored: a, defaultHighlighting: b, sanitize: c, smartypants: d};
 	});
 
+var _user$project$Renderer$normalizeSpaces = F2(
+	function (cBlocks, htmls) {
+		var combine = F2(
+			function (cBlock, html) {
+				var _p0 = cBlock;
+				if (_p0.ctor === 'MathBlock') {
+					return 'testing';
+				} else {
+					return _p0._0;
+				}
+			});
+		return _elm_lang$core$String$concat(
+			A3(_elm_lang$core$List$map2, combine, cBlocks, htmls));
+	});
 var _user$project$Renderer$convertToHtml = function (cBlock) {
-	var renderedStr = function () {
-		var _p0 = cBlock;
-		if (_p0.ctor === 'TextBlock') {
-			return _p0._0;
-		} else {
-			return _bsouthga$elm_katex$KaTeX$renderToString(_p0._0);
-		}
-	}();
-	return A2(
-		_evancz$elm_markdown$Markdown$toHtml,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('inline'),
-			_1: {ctor: '[]'}
-		},
-		renderedStr);
+	var _p1 = cBlock;
+	if (_p1.ctor === 'TextBlock') {
+		return A2(
+			_evancz$elm_markdown$Markdown$toHtml,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('inline'),
+				_1: {ctor: '[]'}
+			},
+			_p1._0);
+	} else {
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('math-wrapper'),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: _bsouthga$elm_katex$KaTeX$render(_p1._0),
+				_1: {ctor: '[]'}
+			});
+	}
 };
 var _user$project$Renderer$FieldValue = function (a) {
 	return {ctor: 'FieldValue', _0: a};
@@ -8563,25 +8585,27 @@ var _user$project$Renderer$TextBlock = function (a) {
 	return {ctor: 'TextBlock', _0: a};
 };
 var _user$project$Renderer$buildBlocks = F2(
-	function (isMath, blocks) {
+	function (id, blocks) {
 		var makeBlock = function (str) {
-			return isMath ? _user$project$Renderer$MathBlock(str) : _user$project$Renderer$TextBlock(str);
+			return _elm_lang$core$Native_Utils.eq(
+				A2(_elm_lang$core$Basics_ops['%'], id, 2),
+				0) ? _user$project$Renderer$TextBlock(str) : _user$project$Renderer$MathBlock(str);
 		};
-		var _p1 = blocks;
-		if (_p1.ctor === '[]') {
+		var _p2 = blocks;
+		if (_p2.ctor === '[]') {
 			return {ctor: '[]'};
 		} else {
-			if (_p1._1.ctor === '[]') {
+			if (_p2._1.ctor === '[]') {
 				return {
 					ctor: '::',
-					_0: _user$project$Renderer$TextBlock(_p1._0),
+					_0: _user$project$Renderer$TextBlock(_p2._0),
 					_1: {ctor: '[]'}
 				};
 			} else {
 				return {
 					ctor: '::',
-					_0: makeBlock(_p1._0),
-					_1: A2(_user$project$Renderer$buildBlocks, !isMath, _p1._1)
+					_0: makeBlock(_p2._0),
+					_1: A2(_user$project$Renderer$buildBlocks, id + 1, _p2._1)
 				};
 			}
 		}
@@ -8589,10 +8613,14 @@ var _user$project$Renderer$buildBlocks = F2(
 var _user$project$Renderer$parse = function (str) {
 	return A2(
 		_user$project$Renderer$buildBlocks,
-		false,
+		0,
 		A2(_elm_lang$core$String$split, '$', str));
 };
 var _user$project$Renderer$render = function (str) {
+	var editorDisplay = A2(
+		_elm_lang$core$List$map,
+		_user$project$Renderer$convertToHtml,
+		_user$project$Renderer$parse(str));
 	var onInput = function (f) {
 		return A2(
 			_elm_lang$html$Html_Events$on,
@@ -8622,10 +8650,7 @@ var _user$project$Renderer$render = function (str) {
 				_0: _elm_lang$html$Html_Attributes$class('editorDisplay'),
 				_1: {ctor: '[]'}
 			},
-			A2(
-				_elm_lang$core$List$map,
-				_user$project$Renderer$convertToHtml,
-				_user$project$Renderer$parse(str))),
+			editorDisplay),
 		_1: {
 			ctor: '::',
 			_0: A2(
@@ -8643,7 +8668,21 @@ var _user$project$Renderer$render = function (str) {
 						}
 					}
 				},
-				{ctor: '[]'}),
+				{
+					ctor: '::',
+					_0: A2(
+						_evancz$elm_markdown$Markdown$toHtml,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('inline'),
+							_1: {ctor: '[]'}
+						},
+						A2(
+							_user$project$Renderer$normalizeSpaces,
+							_user$project$Renderer$parse(str),
+							editorDisplay)),
+					_1: {ctor: '[]'}
+				}),
 			_1: {ctor: '[]'}
 		}
 	};
@@ -8657,25 +8696,38 @@ var _user$project$Main$view = function (model) {
 			_0: _elm_lang$html$Html_Attributes$class('page'),
 			_1: {ctor: '[]'}
 		},
-		_user$project$Renderer$render(model.body));
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('container'),
+					_1: {ctor: '[]'}
+				},
+				_user$project$Renderer$render(model.body)),
+			_1: {ctor: '[]'}
+		});
 };
 var _user$project$Main$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$none;
 };
 var _user$project$Main$update = F2(
 	function (msg, model) {
-		var _p0 = msg;
-		var _p1 = _p0._0;
-		return A2(
-			_elm_lang$core$Debug$log,
-			_p1,
-			{
-				ctor: '_Tuple2',
-				_0: _elm_lang$core$Native_Utils.update(
-					model,
-					{body: _p1}),
-				_1: _elm_lang$core$Platform_Cmd$none
-			});
+		var isMath = function (x) {
+			var _p0 = x;
+			if (_p0.ctor === 'MathBlock') {
+				return _elm_lang$core$Maybe$Just(_p0._0);
+			} else {
+				return _elm_lang$core$Maybe$Nothing;
+			}
+		};
+		var _p1 = msg;
+		return {
+			ctor: '_Tuple2',
+			_0: {body: _p1._0},
+			_1: _elm_lang$core$Platform_Cmd$none
+		};
 	});
 var _user$project$Main$Model = function (a) {
 	return {body: a};
