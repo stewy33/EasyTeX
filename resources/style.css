@@ -68,7 +68,6 @@ div.editorOverlay, div.editorDisplay {
     position: absolute;
     top: 0;
     left: 0;
-    overflow: scroll;
 }
 
 div.editorOverlay {

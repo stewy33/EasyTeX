@@ -8647,7 +8647,7 @@ var _user$project$Renderer$parse = function (str) {
 		0,
 		A2(_elm_lang$core$String$split, '$', str));
 };
-var _user$project$Renderer$render = function (model) {
+var _user$project$Renderer$renderContainer = function (model) {
 	var editorDisplay = A2(
 		_elm_lang$core$Basics_ops['++'],
 		A2(
@@ -8692,17 +8692,8 @@ var _user$project$Renderer$render = function (model) {
 			_elm_lang$html$Html$div,
 			{
 				ctor: '::',
-				_0: _elm_lang$html$Html_Attributes$style(
-					{
-						ctor: '::',
-						_0: {ctor: '_Tuple2', _0: 'font-size', _1: model.fontSize},
-						_1: {ctor: '[]'}
-					}),
-				_1: {
-					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$class('editorDisplay'),
-					_1: {ctor: '[]'}
-				}
+				_0: _elm_lang$html$Html_Attributes$class('editorDisplay'),
+				_1: {ctor: '[]'}
 			},
 			editorDisplay),
 		_1: {
@@ -8870,10 +8861,19 @@ var _user$project$Main$view = function (model) {
 							_elm_lang$html$Html$div,
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$class('container'),
-								_1: {ctor: '[]'}
+								_0: _elm_lang$html$Html_Attributes$style(
+									{
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: 'font-size', _1: model.fontSize},
+										_1: {ctor: '[]'}
+									}),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('container'),
+									_1: {ctor: '[]'}
+								}
 							},
-							_user$project$Renderer$render(model)),
+							_user$project$Renderer$renderContainer(model)),
 						_1: {ctor: '[]'}
 					}),
 				_1: {ctor: '[]'}

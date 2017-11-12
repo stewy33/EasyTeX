@@ -50,8 +50,8 @@ view model =
             , div [ class "toolbar" ] [ fontSelect ]
             ]
         , div [ class "page" ]
-            [ div [ class "container" ] <|
-                render model
+            [ div [ style [ ( "font-size", model.fontSize ) ], class "container" ] <|
+                renderContainer model
             ]
         ]
 

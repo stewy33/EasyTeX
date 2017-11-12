@@ -60,8 +60,8 @@ concatMap cBlocks =
         String.concat <| List.map extract cBlocks
 
 
-render : Model -> List (Html Msg)
-render model =
+renderContainer : Model -> List (Html Msg)
+renderContainer model =
     let
         onInput f =
             on "input" <|
@@ -71,7 +71,7 @@ render model =
         editorDisplay =
             (List.map convertToHtml <| parse model.body) ++ [ div [ class "cursor" ] [] ]
     in
-        [ div [ style [ ( "font-size", model.fontSize ) ], class "editorDisplay" ] editorDisplay
+        [ div [ class "editorDisplay" ] editorDisplay
         , div
             [ class "editorOverlay"
             , contenteditable True
