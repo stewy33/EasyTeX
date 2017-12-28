@@ -76,6 +76,7 @@ renderContainer model =
             [ class "editorOverlay"
             , contenteditable True
             , onInput FieldValue
+            , autofocus True
             ]
             [ Markdown.toHtml [ class "inline" ] <|
                 concatMap <|
