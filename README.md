@@ -1,3 +1,5 @@
+# See the great work our spiritual successors are doing at [Typora](https://typora.io/)
+
 # EasyTeX Hackital 2017
 
 This was our hackital project ([Jason](https://github.com/codethejason),
