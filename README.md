@@ -1,11 +1,11 @@
 # See the great work our spiritual successors are doing at [Typora](https://typora.io/)
 
-# EasyTeX Hackital 2017
+# EasyTeX - Hackital 2017
 
-This was our hackital project ([Jason](https://github.com/codethejason),
-[Sri](https://github.com/spp2010), [Alisha](https://github.com/pikachu1995),
-and me) for Hackital 2017 at George Washington University. We won 3rd overall
-for EasyTeX. 
+This was our ([Jason](https://github.com/codethejason),
+[Sri](https://github.com/spp2010), [Alisha](https://github.com/pikachu1995)
+project at Hackital 2017 at George Washington University. We won 3rd place
+overall for EasyTeX. 
 
 EasyTeX is a browser-based math note-taking app leveraging the power of LaTeX
 and Markdown. The traditional issue with both LaTeX and Markdown is that what
